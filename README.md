@@ -1,6 +1,6 @@
-# QCon Couchbase Hack Challange
+# QCon Couchbase Hack Challenge
 
-App to host the backend for the QCon Couchbase Hack challange
+App to host the backend for the QCon Couchbase Hack Challenge
 
 ## Setup and Run
 
