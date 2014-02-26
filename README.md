@@ -11,7 +11,7 @@ open [localhost:3000](http://localhost:3000)
 
 ## Test
 
-There are no tests yet :(
+    $ rake test
 
 ## License
 MIT

@@ -1,3 +1,5 @@
+require "rake/testtask"
+
 desc "start the dev server"
 task :server do
   system "bundle exec shotgun --server=thin --port=3000 config.ru"
@@ -16,3 +18,7 @@ task :console do
   IRB.start
 end
 
+Rake::TestTask.new do |t|
+  t.libs << 'test'
+  t.pattern = 'test/*_test.rb'
+end

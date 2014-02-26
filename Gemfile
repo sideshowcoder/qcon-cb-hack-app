@@ -3,9 +3,13 @@ source "https://rubygems.org"
 gem "sinatra"
 gem "thin"
 gem "dotenv"
-gem 'sinatra-twitter-bootstrap', require: 'sinatra/twitter-bootstrap'
+gem "couchbase"
+gem "sinatra-twitter-bootstrap", require: "sinatra/twitter-bootstrap"
+gem "mail"
 
-group :development do
+group :development, :test do
+  gem "pry"
+  gem "minitest"
   gem "rake"
   gem "shotgun"
 end
