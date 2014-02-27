@@ -1,0 +1,12 @@
+{
+	"log": ["REST+"],
+	"databases": {
+		"sync_gateway": {
+			"server": "<%= ENV["COUCHBASE_SERVER"] %>",
+			"users": {
+        "admin": {"admin_channels": ["*"], "password": "admin"},
+				"GUEST": {"disabled": false, "admin_channels": ["*"]}
+			}
+		}
+	}
+}

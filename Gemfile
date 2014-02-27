@@ -1,13 +1,14 @@
 source "https://rubygems.org"
 
 gem "sinatra"
-gem "thin"
+gem "unicorn"
 gem "dotenv"
 gem "couchbase"
 gem "sinatra-twitter-bootstrap", require: "sinatra/twitter-bootstrap"
 gem "mail"
 
 group :development, :test do
+gem "foreman"
   gem "pry"
   gem "minitest"
   gem "rake"

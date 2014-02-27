@@ -2,7 +2,7 @@ require "rake/testtask"
 
 desc "start the dev server"
 task :server do
-  system "bundle exec shotgun --server=thin --port=3000 config.ru"
+  system "bundle exec shotgun --port=3000 config.ru"
 end
 
 desc "open IRB with app loaded"

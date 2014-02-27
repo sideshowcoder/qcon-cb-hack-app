@@ -1,0 +1,12 @@
+{
+	"log": ["REST+"],
+	"databases": {
+		"sync_gateway": {
+			"server": "http://localhost:8091",
+			"users": {
+        "admin": {"admin_channels": ["*"], "password": "admin"},
+				"GUEST": {"disabled": false, "admin_channels": ["*"]}
+			}
+		}
+	}
+}
