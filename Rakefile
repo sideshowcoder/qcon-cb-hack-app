@@ -21,13 +21,21 @@ task :console do
   IRB.start
 end
 
-desc "create the needed configuration files"
-task :configure => :dotenv do
-  config_path = "#{$APP_ROOT}/config/sync_gateway_config.json"
-  puts "writing sync_gateway config to #{config_path}..."
-  File.open(config_path, "w") do |f|
-    template = ERB.new(File.read("#{config_path}.erb"))
-    f.write template.result(binding)
+namespace :configure do
+  desc "create the needed configuration files for sync_gateway"
+  task :sync_gateway => :dotenv do
+    sync_gateway_config_path = "#{$APP_ROOT}/config/sync_gateway_config.json"
+    puts "writing sync_gateway config to #{sync_gateway_config_path}..."
+    File.open(config_path, "w") do |f|
+      template = ERB.new(File.read("#{sync_gateway_config_path}.erb"))
+      f.write template.result(binding)
+    end
+  end
+
+  desc "copy nginx configuration files in place"
+  task :nginx do
+    puts "moving nginx config in place..."
+    system "sudo cp #{$APP_ROOT}/config/nginx.conf /etc/nginx/nginx.conf"
   end
 end
 
