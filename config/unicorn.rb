@@ -6,6 +6,9 @@ worker_processes 3
 timeout 30
 preload_app true
 
+app_path = File.join(File.dirname(__FILE__), "..")
+pid "#{app_path}/tmp/unicorn.pid"
+
 def platform
   if (/darwin/ =~ RUBY_PLATFORM) != nil
     "osx"
@@ -27,3 +30,4 @@ end
 before_fork do |server, worker|
   @sync_gateway_pid ||= spawn("bin/sync_gateway_#{platform}", sync_gateway_config)
 end
+
