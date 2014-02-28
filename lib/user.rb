@@ -1,5 +1,6 @@
 require "couchbase_connection"
 require "securerandom"
+require "sync_gateway_user"
 require "mail"
 
 class User
@@ -36,9 +37,18 @@ class User
 
     db.add @key, properties
     db.set token_key, @key
-    true
+    if SyncGatewayUser.new(self).register
+      true
+    else
+      # roleback user creation
+      self.remove
+    end
   rescue Couchbase::Error::KeyExists
     false
+  end
+
+  def completed?
+    @completed = false
   end
 
   def token
@@ -64,9 +74,9 @@ class User
     begin
       db.delete token_key
     rescue Couchbase::Error::NotFound
-      # if user is not stored anyway it's fine
-      true
+      # noop
     end
+    SyncGatewayUser.new(self).deregister
   end
 
   def valid?
@@ -88,22 +98,24 @@ class User
   def load_by_token
     key = db.get(token_key)
 
-    raw_user = db.get(key)
+    assign_properties db.get(key)
     @key = key
-    @token = raw_user["token"]
-    @email = raw_user["email"]
-
     self
   end
 
   def load_by_email
     return false unless valid?
 
-    raw_user = db.get(@key)
-    @token = raw_user["token"]
-    @email = raw_user["email"]
+    assign_properties db.get(@key)
     self
   end
+
+  def assign_properties raw_user
+    @completed = raw_user["completed"] || completed?
+    @token = raw_user["token"]
+    @email = raw_user["email"]
+  end
+
 
   def token_key
     "t::#{@token}"
@@ -114,6 +126,10 @@ class User
   end
 
   def properties
-    { email: @email, token: token }
+    {
+      email: @email,
+      token: token,
+      completed: @completed
+    }
   end
 end

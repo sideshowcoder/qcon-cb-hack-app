@@ -1,6 +1,7 @@
 require "sinatra"
 require "sinatra/twitter-bootstrap"
 require "user"
+require "glorify"
 require "sync_gateway_user"
 
 class App < Sinatra::Base
@@ -12,16 +13,16 @@ class App < Sinatra::Base
   end
 
   register Sinatra::Twitter::Bootstrap::Assets
+  register Sinatra::Glorify
 
   get "/" do
-    erb :index, locals: locals(token: session["user_token"],
-                               email: session["user_email"])
+    erb :index, locals: defaults
   end
 
   post "/signup" do
     email = params["signup"]["email"]
     if params["signup"]["email"].empty?
-      return erb :index, locals: locals(errors: ["You have to provide and Email"])
+      return erb :index, locals: defaults.merge(errors: ["You have to provide and Email"])
     end
 
     user = User.find_or_create(email)
@@ -30,7 +31,7 @@ class App < Sinatra::Base
       session["user_email"] = user.email
       redirect "/"
     else
-      erb :index, locals: locals(errors: user.errors)
+      erb :index, locals: defaults.merge(errors: user.errors)
     end
   end
 
@@ -42,8 +43,24 @@ class App < Sinatra::Base
 
   private
 
-  def locals hash = {}
-    { errors: [], token: false, email: false }.merge hash
+  def completed?
+    return false unless session["user_email"]
+
+    User.find(session["user_email"]).completed?
+  end
+
+  def defaults
+    {
+      errors: [],
+      user_token: session["user_token"],
+      user_email: session["user_email"],
+      user_json: '{"foo":"bar", "key": 1}',
+      email: session["user_email"] || "me@example.com",
+      token: session["user_token"] || "ABC123",
+      sync_gateway_url: ENV["SYNC_GATEWAY_URL"],
+      completed: completed?
+    }
+
   end
 end
 

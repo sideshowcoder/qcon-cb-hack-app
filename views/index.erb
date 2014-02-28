@@ -3,9 +3,9 @@
 </div>
 
 <div class="jumbotron">
-  <h1>Hack Challenge</h1>
+  <h1>Hack Challenge - Win a remote Helicopter!</h1>
   <p class="lead">Build a simple iOS or Android app, before the end of QCon,
-  using Couchbase’s mobile NoSQL database.</p>
+  using Couchbase’s mobile NoSQL database. And get the chance to win a remote Helicopter!</p>
   <% if errors.any? %>
     <div class="alert alert-error">
       <a class="close" data-dismiss="alert">&#215;</a>
@@ -17,9 +17,19 @@
     </div>
   <% end %>
 
-  <% if token %>
-    <p>You signed up with <%= email %></p>
-    <p>Your token is <%= token %></p>
+  <% if user_token %>
+    <h3>
+      <% if completed %>
+        Congratulations you have successfully completed the Challenge!
+      <% else %>
+        You have not yet completed the Challenge!
+      <% end %>
+      </p>
+    </h3>
+    <p>You signed up with <%= user_email %></p>
+    <p>Your token is <%= user_token %></p>
+
+
     <form action="/signout" method="post">
       <p>
       <input class="btn btn-lg btn-success" role="button" type="submit" value="Sign out" />
@@ -40,14 +50,40 @@
 </div>
 
 <div class="description">
-  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-  eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-  voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
-  kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-  ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-  tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-  At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
-  gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+  <h3>The Challenge</h3>
+  <p>
+  The goal is to create your first iOS or Android app using Couchbase Lite to
+  sync documents between the client and server. To complete the challange you
+  need to create an app which authenticates with the Couchbase Sync Gateway and
+  stores a document. The document must be stored under your users token as the
+  key and contain the following JSON
+
+  <p>
+  <%= glorify user_json %>
+  </p>
+  </p>
+
+  <h3>What you need todo</h3>
+  <p>
+  <ol>
+    <li>Create an iOS or Android with Couchbase Lite</li>
+    <li>Authenticate to replicate your Database to the Sync Gateway <%=
+    sync_gateway_url %> using <%= email %> and <%= token %> as credentials
+    for http basic auth</li>
+    <li>Create and replicate a document as seen above</li>
+    <li>Come to our both or the <a href="http://www.meetup.com/Couchbase-London/events/167053132/">Meetup</a> to claim your prize</li>
+  </ol>
+  </p>
+
+  <h3>Some helpful ressources</h3>
+  <p>
+  <ul>
+    <li><a href="http://docs.couchbase.com/couchbase-lite/cbl-ios/">Couchbase iOS Developer Guide</a></li>
+    <li><a href="http://docs.couchbase.com/couchbase-lite/cbl-android/cbl-android-1.0b2/">Couchbase Android Developer Guide</a></li>
+    <li><a href="http://docs.couchbase.com/couchbase-lite/cbl-android/cbl-android-1.0b2/">Couchbase Android Developer Guide</a></li>
+    <li><a href="https://github.com/couchbase/couchbase-lite-ios">Couchbase Lite on Github with more helpful links</a></li>
+  </ul>
+  </p>
 </div>
 
 <div class="footer">
