@@ -1,10 +1,11 @@
 <div class="header">
-  <h3 class="text-muted">QCon Couchbase Hack Challenge</h3>
+  <h3 class="text-muted">Couchbase Lite @ QCon</h3>
 </div>
 
 <div class="jumbotron">
-  <h1>Hack with us at QCon</h1>
-  <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+  <h1>Hack Challenge</h1>
+  <p class="lead">Build a simple iOS or Android app, before the end of QCon,
+  using Couchbase’s mobile NoSQL database.</p>
   <% if errors.any? %>
     <div class="alert alert-error">
       <a class="close" data-dismiss="alert">&#215;</a>
@@ -17,7 +18,14 @@
   <% end %>
 
   <% if token %>
+    <p>You signed up with <%= email %></p>
     <p>Your token is <%= token %></p>
+    <form action="/signout" method="post">
+      <p>
+      <input class="btn btn-lg btn-success" role="button" type="submit" value="Sign out" />
+      </p>
+    </form>
+
   <% else %>
     <form action="/signup" method="post">
       <p>

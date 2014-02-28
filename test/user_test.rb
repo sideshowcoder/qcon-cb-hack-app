@@ -8,11 +8,9 @@ describe User do
   end
 
   after do
-    db = CouchbaseConnection.connection
-
-    db.delete "philipp.fehre@gmail.com" rescue nil
-    db.delete "me@example.com" rescue nil
-    db.delete "foobar" rescue nil
+    User.new("philipp.fehre@gmail.com").remove
+    User.new("me@example.com").remove
+    User.new("foobar").remove
   end
 
   it "saves" do
@@ -24,12 +22,15 @@ describe User do
     User.new("philipp.fehre@gmail.com").save.must_equal false
   end
 
-  it "finds the user token" do
+  it "loads the user properties" do
     User.find("me@example.com").token.wont_be_empty
+    User.find("me@example.com").email.wont_be_empty
   end
 
   it "finds or creates" do
+    # new user
     User.find_or_create("philipp.fehre@gmail.com").token.wont_be_empty
+    # existing user
     User.find_or_create("me@example.com").token.wont_be_empty
   end
 

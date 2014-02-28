@@ -4,23 +4,25 @@ require "mail"
 
 class User
 
-  attr_reader :errors
+  attr_reader :errors, :email, :key
 
-  def self.find key
-    new(key).load
+  def self.find email
+    new(email).load
   end
 
-  def self.find_or_create key
-    unless user = find(key)
-      user = new(key)
+  def self.find_or_create email
+    user = find(email)
+    unless user
+      user = new(email)
       user.save
     end
     user
   end
 
-  def initialize key
+  def initialize email
     @db = db
-    @key = key
+    @email = email
+    @key = "u::#{email}"
     @errors = []
   end
 
@@ -42,15 +44,23 @@ class User
 
     raw_user = db.get(@key)
     @token = raw_user["token"]
+    @email = raw_user["email"]
     self
   rescue Couchbase::Error::NotFound
     false
   end
 
+  def remove
+    db.delete @key
+  rescue Couchbase::Error::NotFound
+    # if user is not stored anyway it's fine
+    true
+  end
+
   def valid?
     begin
-      m = Mail::Address.new(@key)
-      r = m.domain && m.address == @key
+      m = Mail::Address.new(@email)
+      r = m.domain && m.address == @email
       t = m.__send__(:tree)
       r &&= (t.domain.dot_atom_text.elements.size > 1)
     rescue Exception
@@ -68,6 +78,6 @@ class User
   end
 
   def properties
-    { email: @key, token: token }
+    { email: @email, token: token }
   end
 end

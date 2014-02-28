@@ -1,6 +1,7 @@
 require "sinatra"
 require "sinatra/twitter-bootstrap"
 require "user"
+require "sync_gateway_user"
 
 class App < Sinatra::Base
 
@@ -13,28 +14,36 @@ class App < Sinatra::Base
   register Sinatra::Twitter::Bootstrap::Assets
 
   get "/" do
-    erb :index, locals: locals_with(token: session["user_token"])
+    erb :index, locals: locals(token: session["user_token"],
+                               email: session["user_email"])
   end
 
   post "/signup" do
     email = params["signup"]["email"]
     if params["signup"]["email"].empty?
-      return erb :index, locals: { errors: "You have to provide and Email" }
+      return erb :index, locals: locals(errors: ["You have to provide and Email"])
     end
 
     user = User.find_or_create(email)
     if user.valid?
       session["user_token"] = user.token
-      erb :index, locals: locals_with(token: user.token)
+      session["user_email"] = user.email
+      redirect "/"
     else
-      erb :index, locals: locals_with(errors: user.errors)
+      erb :index, locals: locals(errors: user.errors)
     end
+  end
+
+  post "/signout" do
+    session["user_token"] = nil
+    session["user_email"] = nil
+    redirect "/"
   end
 
   private
 
-  def locals_with hash
-    { errors: [], token: false }.merge hash
+  def locals hash = {}
+    { errors: [], token: false, email: false }.merge hash
   end
 end
 
