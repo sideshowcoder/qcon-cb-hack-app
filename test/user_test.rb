@@ -4,7 +4,8 @@ require "couchbase_connection"
 
 describe User do
   before do
-    User.new("me@example.com").save
+    @user = User.new("me@example.com")
+    @user.save
   end
 
   after do
@@ -25,6 +26,10 @@ describe User do
   it "loads the user properties" do
     User.find("me@example.com").token.wont_be_empty
     User.find("me@example.com").email.wont_be_empty
+  end
+
+  it "finds user by token" do
+    User.find_by_token(@user.token).email.wont_be_empty
   end
 
   it "finds or creates" do

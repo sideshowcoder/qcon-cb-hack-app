@@ -10,6 +10,10 @@ class User
     new(email).load
   end
 
+  def self.find_by_token token
+    new(nil, token).load
+  end
+
   def self.find_or_create email
     user = find(email)
     unless user
@@ -19,10 +23,11 @@ class User
     user
   end
 
-  def initialize email
+  def initialize email, token = nil
     @db = db
     @email = email
     @key = "u::#{email}"
+    @token = token
     @errors = []
   end
 
@@ -30,6 +35,7 @@ class User
     return false unless valid?
 
     db.add @key, properties
+    db.set token_key, @key
     true
   rescue Couchbase::Error::KeyExists
     false
@@ -40,21 +46,27 @@ class User
   end
 
   def load
-    return false unless valid?
-
-    raw_user = db.get(@key)
-    @token = raw_user["token"]
-    @email = raw_user["email"]
-    self
+    if email.nil?
+      load_by_token
+    else
+      load_by_email
+    end
   rescue Couchbase::Error::NotFound
     false
   end
 
   def remove
-    db.delete @key
-  rescue Couchbase::Error::NotFound
-    # if user is not stored anyway it's fine
-    true
+    begin
+      db.delete @key
+    rescue Couchbase::Error::NotFound
+      # noop
+    end
+    begin
+      db.delete token_key
+    rescue Couchbase::Error::NotFound
+      # if user is not stored anyway it's fine
+      true
+    end
   end
 
   def valid?
@@ -72,6 +84,30 @@ class User
   end
 
   private
+
+  def load_by_token
+    key = db.get(token_key)
+
+    raw_user = db.get(key)
+    @key = key
+    @token = raw_user["token"]
+    @email = raw_user["email"]
+
+    self
+  end
+
+  def load_by_email
+    return false unless valid?
+
+    raw_user = db.get(@key)
+    @token = raw_user["token"]
+    @email = raw_user["email"]
+    self
+  end
+
+  def token_key
+    "t::#{@token}"
+  end
 
   def db
     @db ||= CouchbaseConnection.connection
