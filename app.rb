@@ -1,6 +1,7 @@
 require "sinatra"
 require "sinatra/twitter-bootstrap"
 require "user"
+require "json"
 require "glorify"
 require "sync_gateway_user"
 
@@ -50,17 +51,29 @@ class App < Sinatra::Base
   end
 
   def defaults
+    track_sub_doc = { rating: "YOUR RATING A - F", comment: "YOUR COMMENT" }
+    json_md = <<-eos
+```javascript
+      #{session["user_token"] || "ABC123"} = #{JSON.pretty_generate(
+        :Architecture => track_sub_doc,
+        :"Back end" => track_sub_doc,
+        :"Front end" => track_sub_doc,
+        :Process => track_sub_doc,
+        :Training => track_sub_doc,
+        :"Solution Track" => track_sub_doc
+      )}
+```
+    eos
     {
       errors: [],
       user_token: session["user_token"],
       user_email: session["user_email"],
-      user_json: '{"foo":"bar", "key": 1}',
+      user_json: json_md,
       email: session["user_email"] || "me@example.com",
       token: session["user_token"] || "ABC123",
       sync_gateway_url: ENV["SYNC_GATEWAY_URL"],
       completed: completed?
     }
-
   end
 end
 
