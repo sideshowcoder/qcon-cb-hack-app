@@ -48,7 +48,11 @@ class User
   end
 
   def completed?
-    @completed = false
+    doc = sync_gateway_bucket.get(token)
+    # TODO more verification than 'it exists'
+    !doc.empty?
+  rescue Couchbase::Error::NotFound
+    false
   end
 
   def token
@@ -111,7 +115,6 @@ class User
   end
 
   def assign_properties raw_user
-    @completed = raw_user["completed"] || completed?
     @token = raw_user["token"]
     @email = raw_user["email"]
   end
@@ -125,11 +128,14 @@ class User
     @db ||= CouchbaseConnection.connection
   end
 
+  def sync_gateway_bucket
+    @sync_gateway_bucket ||= CouchbaseConnection.sync_gateway_bucket
+  end
+
   def properties
     {
       email: @email,
       token: token,
-      completed: @completed
     }
   end
 end

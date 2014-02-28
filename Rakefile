@@ -26,7 +26,7 @@ namespace :configure do
   task :sync_gateway => :dotenv do
     sync_gateway_config_path = "#{$APP_ROOT}/config/sync_gateway_config.json"
     puts "writing sync_gateway config to #{sync_gateway_config_path}..."
-    File.open(config_path, "w") do |f|
+    File.open(sync_gateway_config_path, "w") do |f|
       template = ERB.new(File.read("#{sync_gateway_config_path}.erb"))
       f.write template.result(binding)
     end

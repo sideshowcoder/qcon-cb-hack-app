@@ -3,10 +3,20 @@
 	"databases": {
 		"sync_gateway": {
 			"server": "http://localhost:8091",
-			"users": {
-        "admin": {"admin_channels": ["*"], "password": "admin"},
-				"GUEST": {"disabled": false, "admin_channels": ["*"]}
-			}
+			"users": { "GUEST": {"disabled": true} },
+      "sync": `
+function(doc, oldDoc) {
+  if (doc.type == "rating") {
+    channel("rating-"+doc._id);
+    if (!doc.owner) {
+      throw({forbidden : "rating must have an owner"})
+    }
+    if (oldDoc) {
+      requireUser(oldDoc.owner)
+    }
+    access(doc.owner, "rating-"+doc._id);
+  }
+}`
 		}
 	}
 }

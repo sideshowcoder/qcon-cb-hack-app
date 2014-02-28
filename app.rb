@@ -47,14 +47,23 @@ class App < Sinatra::Base
   def completed?
     return false unless session["user_email"]
 
-    User.find(session["user_email"]).completed?
+    user = User.find(session["user_email"])
+    if user
+      user.completed?
+    else
+      false
+    end
   end
 
   def defaults
     track_sub_doc = { rating: "YOUR RATING A - F", comment: "YOUR COMMENT" }
+    token = session["user_token"] || "ABC123"
+    email = session["user_email"] || "me@example.com"
     json_md = <<-eos
 ```javascript
-      #{session["user_token"] || "ABC123"} = #{JSON.pretty_generate(
+      "#{token}" = #{JSON.pretty_generate(
+        :type => "rating",
+        :owner => email,
         :Architecture => track_sub_doc,
         :"Back end" => track_sub_doc,
         :"Front end" => track_sub_doc,
@@ -69,8 +78,8 @@ class App < Sinatra::Base
       user_token: session["user_token"],
       user_email: session["user_email"],
       user_json: json_md,
-      email: session["user_email"] || "me@example.com",
-      token: session["user_token"] || "ABC123",
+      email: email,
+      token: token,
       sync_gateway_url: ENV["SYNC_GATEWAY_URL"],
       completed: completed?
     }
