@@ -18,22 +18,17 @@
   <% end %>
 
   <% if user_token %>
-    <h3>
       <% if completed %>
-        Congratulations you have successfully completed the Challenge!
+        <h3>Congratulations you have successfully completed the Challenge!</h3>
+        <p><a class="btn btn-lg btn-success" role="button" href=" http://twitter.com/intent/tweet?text=I+completed+the+%40couchbase+Hack+Challenge!+http%3A%2F%2Fwww.couchbase.com%2Fqconhack">Tweet about it</a></p>
       <% else %>
-        You have not yet completed the Challenge!
+        <h3>You have not yet completed the Challenge!</h3>
       <% end %>
-      </p>
-    </h3>
     <p>You signed up with <%= user_email %></p>
     <p>Your token is <%= user_token %></p>
 
-
     <form action="/signout" method="post">
-      <p>
-      <input class="btn btn-lg btn-success" role="button" type="submit" value="Sign out" />
-      </p>
+      <p><input class="btn btn-default btn-xs" role="button" type="submit" value="Sign out" /></p>
     </form>
 
   <% else %>
@@ -71,6 +66,7 @@
     sync_gateway_url %> using <%= email %> and <%= token %> as credentials
     for http basic auth</li>
     <li>Create and replicate a document as seen above</li>
+    <li>Tweet to @couchbase about it</li>
     <li>Come to our both or the <a href="http://www.meetup.com/Couchbase-London/events/167053132/">Meetup</a> to claim your prize</li>
   </ol>
   </p>
