@@ -6,6 +6,8 @@
   <h1>Hack Challenge - Win a remote Helicopter!</h1>
   <p class="lead">Build a simple iOS or Android app, before the end of QCon,
   using Couchbase’s mobile NoSQL database. And get the chance to win a remote Helicopter!</p>
+  <p class="lead">Can't do it during QCon? Come to our <a href="http://www.meetup.com/Couchbase-London/events/167053132/">Meetup</a>, and we'll help you along!</p>
+
   <% if errors.any? %>
     <div class="alert alert-error">
       <a class="close" data-dismiss="alert">&#215;</a>
@@ -52,7 +54,6 @@
   need to create an app which authenticates with the Couchbase Sync Gateway and
   stores a document. The document must be stored under your users token as the
   key and contain the following JSON with ratings and comments to your liking.
-
   <p>
   <%= glorify user_json %>
   </p>
@@ -69,8 +70,8 @@
       <li>Authentication Realm: Couchbase Sync Gateway</li>
       <li>URL: <%= sync_gateway_url %></li>
     </ul>
-    <li>Create and replicate a document as seen above</li>
-    <li>Tweet to @couchbase about it</li>
+    <li>Create and replicate a document as seen above, visit this page to see if it worked.</li>
+    <li>Tweet to <a href=" http://twitter.com/intent/tweet?text=I+completed+the+%40couchbase+Hack+Challenge!+http%3A%2F%2Fwww.couchbase.com%2Fqconhack">@couchbase about it</a></li>
     <li>Come to our both or the <a href="http://www.meetup.com/Couchbase-London/events/167053132/">Meetup</a> to claim your prize</li>
   </ol>
   </p>
