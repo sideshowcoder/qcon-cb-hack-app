@@ -1,5 +1,6 @@
 require "sinatra"
 require "sinatra/twitter-bootstrap"
+require "helpers"
 require "user"
 require "json"
 require "glorify"
@@ -12,6 +13,8 @@ class App < Sinatra::Base
     set :root, File.dirname(__FILE__)
     enable :sessions
   end
+
+  helpers Utils
 
   register Sinatra::Twitter::Bootstrap::Assets
   register Sinatra::Glorify
