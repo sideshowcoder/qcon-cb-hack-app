@@ -50,6 +50,9 @@ Couchbase Hack Challenge runs currently on AWS on Ubuntu 12.04LTS
 
     $ bundle exec god -c config/qcon_cb_hack_app.god
 
+## Solve the challenge
+An example see [QCon iOS example](https://github.com/sideshowcoder/QConCBHack)
+
 ## License
 MIT
 
