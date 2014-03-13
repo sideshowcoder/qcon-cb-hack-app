@@ -1,0 +1,24 @@
+<div class="header">
+  <h3 class="text-muted">Couchbase Lite @ QCon - Admin Interface</h3>
+</div>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <td>EMail</td>
+      <td>Completed</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% users.each do |user| %>
+      <tr>
+        <td><%= user.email %></td>
+        <td><%= user.completed? %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="footer">
+  <p>© Couchbase 2014</p>
+</div>

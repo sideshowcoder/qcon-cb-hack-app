@@ -8,27 +8,35 @@ class User
   attr_reader :errors, :email, :key
 
   def self.find email
-    new(email).load
+    new(email: email).load
+  end
+
+  def self.create email
+    if new(email: email).save
+      find(email)
+    else
+      false
+    end
   end
 
   def self.find_by_token token
-    new(nil, token).load
+    new(token: token).load
   end
 
   def self.find_or_create email
     user = find(email)
     unless user
-      user = new(email)
+      user = new(email: email)
       user.save
     end
     user
   end
 
-  def initialize email, token = nil
-    @db = db
-    @email = email
-    @key = "u::#{email}"
-    @token = token
+  def initialize params
+    @email = params[:email]
+    @key = params.fetch(:key) { "u::#{email}" if @email }
+    @token = params[:token]
+    @completed = nil
     @errors = []
   end
 
@@ -48,9 +56,13 @@ class User
   end
 
   def completed?
-    doc = sync_gateway_bucket.get(token)
-    # TODO more verification than 'it exists'
-    !doc.empty?
+    if @completed.nil?
+      doc = sync_gateway_bucket.get(token)
+      # TODO more verification than 'it exists'
+      @completed = !doc.empty?
+    else
+      @completed
+    end
   rescue Couchbase::Error::NotFound
     false
   end
@@ -98,7 +110,6 @@ class User
   end
 
   private
-
   def load_by_token
     key = db.get(token_key)
 

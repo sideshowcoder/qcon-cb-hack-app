@@ -4,23 +4,23 @@ require "couchbase_connection"
 
 describe User do
   before do
-    @user = User.new("me@example.com")
-    @user.save
+    @user = User.find_or_create("me@example.com")
   end
 
   after do
-    User.new("philipp.fehre@gmail.com").remove
-    User.new("me@example.com").remove
-    User.new("foobar").remove
+    ["philipp.fehre@gmail.com", "me@example.com", "foobar"].each do |email|
+      user = User.find(email)
+      user.remove if user
+    end
   end
 
   it "saves" do
-    User.new("philipp.fehre@gmail.com").save.must_equal true
+    User.create("philipp.fehre@gmail.com").must_be_instance_of User
   end
 
   it "not saves twice" do
-    User.new("philipp.fehre@gmail.com").save.must_equal true
-    User.new("philipp.fehre@gmail.com").save.must_equal false
+    User.create("philipp.fehre@gmail.com").must_be_instance_of User
+    User.create("philipp.fehre@gmail.com").must_equal false
   end
 
   it "loads the user properties" do

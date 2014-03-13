@@ -1,0 +1,10 @@
+{
+  "_id": "_design/user_list",
+  "language": "javascript",
+  "views": {
+    "users": {
+      "map": "function(doc, meta){ if(doc.email){ emit(meta.id, null); } }"
+    }
+  }
+}
+

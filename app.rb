@@ -5,6 +5,7 @@ require "user"
 require "json"
 require "glorify"
 require "sync_gateway_user"
+require "user_list"
 
 class App < Sinatra::Base
 
@@ -43,6 +44,14 @@ class App < Sinatra::Base
     session["user_token"] = nil
     session["user_email"] = nil
     redirect "/"
+  end
+
+  # admin
+  get "/admin" do
+    protected!
+
+    users = UserList.all
+    erb :admin, locals: {users: users}
   end
 
   private
@@ -89,5 +98,3 @@ class App < Sinatra::Base
   end
 end
 
-# TODO create the user in the sync gateway username is email password is the token
-# TODO present the user with the JSON documents he should store under his user
